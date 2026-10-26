@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>collection-tracker 收藏管理</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">📦</span>
+      <div class="brand-text">
+        <h1>collection-tracker</h1>
+        <p>收藏管理</p>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button class="tab active" data-tab="items">🏛️ 收藏品</button>
+      <button class="tab" data-tab="wishlist">⭐ 愿望单</button>
+      <button class="tab" data-tab="stats">📊 价值统计</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ============ 收藏品 ============ -->
+    <section id="view-items" class="view active">
+      <div class="toolbar">
+        <div class="filters">
+          <select id="filter-category" aria-label="按分类筛选">
+            <option value="">全部分类</option>
+          </select>
+          <select id="filter-status" aria-label="按状态筛选">
+            <option value="">全部状态</option>
+            <option value="owned">在库</option>
+            <option value="lent">借出</option>
+            <option value="selling">出售中</option>
+            <option value="sold">已售出</option>
+          </select>
+          <select id="filter-sort" aria-label="排序方式">
+            <option value="newest">最新添加</option>
+            <option value="value_desc">估值从高到低</option>
+            <option value="value_asc">估值从低到高</option>
+            <option value="price_desc">购入价从高到低</option>
+          </select>
+          <input id="filter-search" type="search" placeholder="搜索名称 / 位置 / 备注…">
+        </div>
+        <div class="toolbar-right">
+          <span id="items-count" class="muted"></span>
+          <button id="btn-add-item" class="btn btn-primary">＋ 新增收藏品</button>
+        </div>
+      </div>
+
+      <div id="items-grid" class="items-grid">
+        <div class="empty">加载中…</div>
+      </div>
+
+      <div id="item-modal" class="modal-backdrop hidden">
+        <form id="item-form" class="modal">
+          <div class="modal-head">
+            <h2 class="modal-title">新增收藏品</h2>
+            <button type="button" class="modal-close" data-close aria-label="关闭">×</button>
+          </div>
+          <div class="form-grid">
+            <label class="span2">名称
+              <input name="name" required maxlength="80" placeholder="例如：雪初音 2020 手办">
+            </label>
+            <label>分类
+              <select name="category"></select>
+            </label>
+            <label>状态
+              <select name="status">
+                <option value="owned">在库</option>
+                <option value="lent">借出</option>
+                <option value="selling">出售中</option>
+                <option value="sold">已售出</option>
+              </select>
+            </label>
+            <label>购入价（元）
+              <input name="purchasePrice" type="number" min="0" step="0.01" required placeholder="0.00">
+            </label>
+            <label>当前估值（元）
+              <input name="currentValue" type="number" min="0" step="0.01" required placeholder="0.00">
+            </label>
+            <label>购入日期
+              <input name="purchaseDate" type="date">
+            </label>
+            <label>存放位置
+              <input name="location" placeholder="例如：展示柜 A 层">
+            </label>
+            <label class="span2">备注
+              <textarea name="note" rows="2" placeholder="成色、来源、配件…"></textarea>
+            </label>
+          </div>
+          <div class="modal-foot">
+            <button type="button" class="btn btn-ghost" data-close>取消</button>
+            <button type="submit" class="btn btn-primary">保存</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ 愿望单 ============ -->
+    <section id="view-wishlist" class="view">
+      <div class="toolbar">
+        <div class="filters">
+          <span id="wishlist-count" class="muted"></span>
+        </div>
+        <div class="toolbar-right">
+          <button id="btn-add-wish" class="btn btn-primary">＋ 加入愿望单</button>
+        </div>
+      </div>
+
+      <div id="wishlist-list" class="wish-list">
+        <div class="empty">加载中…</div>
+      </div>
+
+      <div id="wish-modal" class="modal-backdrop hidden">
+        <form id="wish-form" class="modal">
+          <div class="modal-head">
+            <h2 class="modal-title">加入愿望单</h2>
+            <button type="button" class="modal-close" data-close aria-label="关闭">×</button>
+          </div>
+          <div class="form-grid">
+            <label class="span2">名称
+              <input name="name" required maxlength="80" placeholder="想要入手的收藏品">
+            </label>
+            <label>分类
+              <select name="category"></select>
+            </label>
+            <label>优先级
+              <select name="priority">
+                <option value="high">高</option>
+                <option value="medium" selected>中</option>
+                <option value="low">低</option>
+              </select>
+            </label>
+            <label>预算 / 心理价（元）
+              <input name="targetPrice" type="number" min="0" step="0.01" placeholder="0.00">
+            </label>
+            <label class="span2">备注
+              <textarea name="note" rows="2" placeholder="渠道、蹲价策略…"></textarea>
+            </label>
+          </div>
+          <div class="modal-foot">
+            <button type="button" class="btn btn-ghost" data-close>取消</button>
+            <button type="submit" class="btn btn-primary">保存</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- ============ 价值统计 ============ -->
+    <section id="view-stats" class="view">
+      <div class="toolbar">
+        <h2 class="section-title">价值统计与趋势</h2>
+        <span id="stats-updated" class="muted"></span>
+      </div>
+
+      <div id="stats-overview" class="stats-grid">
+        <div class="empty">加载中…</div>
+      </div>
+
+      <div class="panel">
+        <h3>分类价值分布（在库）</h3>
+        <table class="stats-table">
+          <thead>
+            <tr>
+              <th>分类</th>
+              <th>件数</th>
+              <th class="num">当前估值</th>
+              <th class="num">累计投入</th>
+              <th>估值占比</th>
+            </tr>
+          </thead>
+          <tbody id="stats-category-body"></tbody>
+        </table>
+      </div>
+
+      <div class="panel">
+        <h3>状态分布</h3>
+        <div id="stats-status" class="status-row"></div>
+      </div>
+
+      <div class="panel">
+        <h3>投入趋势（最近 12 个有购入记录的月份）</h3>
+        <div id="stats-trend"></div>
+        <div class="legend">
+          <span><i class="legend-line"></i>累计投入</span>
+          <span><i class="legend-bar"></i>每月新增件数</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    collection-tracker · 数据保存在 server/data.json · REST API 见 README
+  </footer>
+
+  <div id="toast-box"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
