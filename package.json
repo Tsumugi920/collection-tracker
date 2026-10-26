@@ -1,0 +1,17 @@
+{
+  "name": "collection-tracker",
+  "version": "1.0.0",
+  "private": true,
+  "description": "collection-tracker 收藏管理 —— 前后端完整项目（Express REST API + 原生前端）",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "server": "node server/index.js"
+  },
+  "engines": {
+    "node": ">=16"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
